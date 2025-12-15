@@ -5,6 +5,8 @@ app_name = "send_surgi_invoice"
 app_title = "Send Surgi Invoice"
 app_publisher = "SurgiShop"
 app_description = "Automatically sends sales invoices to customers 24 hours after submission"
+app_icon = "octicon octicon-mail"
+app_color = "blue"
 app_email = "accounting@surgishop.com"
 app_license = "MIT"
 
@@ -12,7 +14,7 @@ app_license = "MIT"
 scheduler_events = {
     "cron": {
         "0 */1 * * *": [  # Run every hour
-            "send_surgi_invoice.tasks.send_pending_invoices"
+            "send_surgi_invoice.send_surgi_invoice.tasks.send_pending_invoices"
         ]
     }
 }
@@ -20,7 +22,6 @@ scheduler_events = {
 # Document Events - mark invoice for auto-send when submitted
 doc_events = {
     "Sales Invoice": {
-        "on_submit": "send_surgi_invoice.events.sales_invoice.mark_for_auto_send"
+        "on_submit": "send_surgi_invoice.send_surgi_invoice.sales_invoice_events.mark_for_auto_send"
     }
 }
-
