@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+import frappe
+from datetime import datetime, timedelta
+
+def mark_for_auto_send(doc, method):
+    """
+    Mark Sales Invoice for automatic sending 24 hours after submission.
+    This function is triggered on_submit event.
+    """
+    try:
+        # Calculate send time (24 hours from now)
+        send_time = datetime.now() + timedelta(hours=24)
+        
+        # Add a custom field value to track auto-send status
+        # Note: You'll need to create these custom fields in Sales Invoice doctype
+        doc.db_set('auto_send_scheduled', 1, update_modified=False)
+        doc.db_set('scheduled_send_time', send_time, update_modified=False)
+        doc.db_set('auto_send_status', 'Scheduled', update_modified=False)
+        
+        frappe.db.commit()
+        
+        frappe.msgprint(
+            f"Invoice will be automatically sent to customer on {send_time.strftime('%Y-%m-%d %H:%M')}",
+            indicator='green',
+            title='Auto-Send Scheduled'
+        )
+        
+    except Exception as e:
+        frappe.log_error(
+            message=str(e),
+            title="Error marking invoice for auto-send"
+        )
